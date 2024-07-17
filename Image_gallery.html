@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .gallery-item {
+            width: calc(25% - 10px); /* Subtracting the gap to fit 4 images per row */
+            height: 200px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        .lightbox {
+            display: flex;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .lightbox-content {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <!-- Babel Compiler -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Application Code -->
+    <script type="text/babel">
+        const { useState } = React;
+
+        const images = [
+            'https://www.ediblearrangements.com/blog/wp-content/uploads/2021/11/Rose-min.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMmYxOoVVMRyOt_umSdRWfLbJB5c5Jgv-IHg&s',
+            'https://img.freepik.com/free-photo/beautiful-flowers-with-water-drops_23-2150705665.jpg',
+            'https://t4.ftcdn.net/jpg/05/57/29/25/360_F_557292539_2kXYz0frOcCGISoYEd2MNTmxyT0lYyOj.jpg',
+            'https://t3.ftcdn.net/jpg/05/98/71/38/360_F_598713855_9XSeg0xmbTo4GUSf2Yj3QhzfkodIoqo1.jpg',
+            'https://static.vecteezy.com/system/resources/previews/022/257/308/non_2x/rose-flower-pictures-beautiful-roses-love-rose-flower-beautiful-flowers-wallpapers-ai-generated-free-photo.jpg',
+            'https://t3.ftcdn.net/jpg/05/71/07/58/360_F_571075880_NTWRQfNwQDa0NLnWH44TLPXKil3pKqJl.jpg',
+            'https://i.redd.it/yltqjfehrs8c1.jpeg',
+'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgbPm6JNoNLWVcjeREiSSSc4iY_jDJ0srWjQ&s',
+'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThtH5RHv-iUnZFz2LUUsHpjl0IdKE0MUFEtA&s',
+'https://i.pinimg.com/originals/09/56/27/095627c610fa43cd756dc8e950a8a66f.jpg',
+'https://cdn4.sharechat.com/compressed_gm_40_img_585976_37fba512_1692334583681_sc.jpg?tenant=sc&referrer=feed-service&f=681_sc.jpg'
+        ];
+
+        function App() {
+            const [selectedImage, setSelectedImage] = useState(null);
+
+            const openLightbox = (image) => {
+                setSelectedImage(image);
+            };
+
+            const closeLightbox = () => {
+                setSelectedImage(null);
+            };
+
+            return (
+                <div className="App">
+                    <ImageGallery images={images} openLightbox={openLightbox} />
+                    {selectedImage && (
+                        <Lightbox image={selectedImage} closeLightbox={closeLightbox} />
+                    )}
+                </div>
+            );
+        }
+
+        function ImageGallery({ images, openLightbox }) {
+            return (
+                <div className="gallery">
+                    {images.map((image, index) => (
+                        <ImageItem key={index} src={image} onClick={() => openLightbox(image)} />
+                    ))}
+                </div>
+            );
+        }
+
+        function ImageItem({ src, onClick }) {
+            return <img src={src} alt="" className="gallery-item" onClick={onClick} />;
+        }
+
+        function Lightbox({ image, closeLightbox }) {
+            return (
+                <div className="lightbox" onClick={closeLightbox}>
+                    <span className="close">&times;</span>
+                    <img src={image} alt="" className="lightbox-content" />
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
